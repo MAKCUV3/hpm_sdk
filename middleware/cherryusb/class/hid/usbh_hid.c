@@ -255,16 +255,16 @@ found:
     //     return ret;
     // }
 
-    ret = usbh_hid_set_idle(hid_class, 0, 0);
-    if (ret < 0) {
-        USB_LOG_WRN("Do not support set idle\r\n");
-    }
+    // ret = usbh_hid_set_idle(hid_class, 0, 0);
+    // if (ret < 0) {
+    //     USB_LOG_WRN("Do not support set idle\r\n");
+    // }
 
     /* We read report desc but do nothing (because of too much memory usage for parsing report desc, parsed by users) */
-    ret = usbh_hid_get_report_descriptor(hid_class, g_hid_buf[hid_class->minor], MIN(sizeof(g_hid_buf[hid_class->minor]), hid_class->report_size));
-    if (ret < 0) {
-        return ret;
-    }
+    // ret = usbh_hid_get_report_descriptor(hid_class, g_hid_buf[hid_class->minor], MIN(sizeof(g_hid_buf[hid_class->minor]), hid_class->report_size));
+    // if (ret < 0) {
+    //     return ret;
+    // }
 
     for (uint8_t i = 0; i < hport->config.intf[intf].altsetting[0].intf_desc.bNumEndpoints; i++) {
         ep_desc = &hport->config.intf[intf].altsetting[0].ep[i].ep_desc;
@@ -280,7 +280,7 @@ found:
     USB_LOG_INFO("Register HID Class:%s\r\n", hport->config.intf[intf].devname);
 
     usbh_hid_run(hid_class);
-    return ret;
+    return 0;
 }
 
 int usbh_hid_disconnect(struct usbh_hubport *hport, uint8_t intf)
