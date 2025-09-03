@@ -119,6 +119,8 @@ void usb_dcd_bus_reset(USB_Type *ptr, uint16_t ep0_max_packet_size)
     }
 }
 
+extern bool g_usb_device_is_hs;
+
 void usb_dcd_init(USB_Type *ptr)
 {
     /* Initialize USB phy */
@@ -151,10 +153,11 @@ void usb_dcd_init(USB_Type *ptr)
     /* Set parallel transceiver width */
     ptr->PORTSC1 &= ~USB_PORTSC1_PTW_MASK;
 
-#if defined(CONFIG_USB_DEVICE_FS) || defined(CONFIG_USB_DEVICE_FORCE_FULL_SPEED)
-    /* Set usb forced to full speed mode */
-    ptr->PORTSC1 |= USB_PORTSC1_PFSC_MASK;
-#endif
+    if(!g_usb_device_is_hs && ptr == HPM_USB0)
+    {
+        /* Set usb forced to full speed mode */
+        ptr->PORTSC1 |= USB_PORTSC1_PFSC_MASK;
+    }
 
     /* Not use interrupt threshold. */
     ptr->USBCMD &= ~USB_USBCMD_ITC_MASK;
