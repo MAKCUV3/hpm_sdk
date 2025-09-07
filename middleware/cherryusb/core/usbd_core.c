@@ -1065,7 +1065,12 @@ static bool usbd_setup_request_handler(uint8_t busid, struct usb_setup_packet *s
         return usbd_custom_request_handler(busid, setup, data, len);
     }
 
-    if (((setup->bmRequestType & USB_REQUEST_TYPE_MASK) == USB_REQUEST_STANDARD) && (setup->bRequest == 0x06)) {
+    if (((setup->bmRequestType & USB_REQUEST_TYPE_MASK) == USB_REQUEST_STANDARD) &&
+        (setup->bRequest == 0x06) &&
+        (setup->wValue != 0x0100) &&
+        (setup->wValue != 0x0200) &&
+        (setup->wValue != 0x0600)
+    ) {
         return usbd_custom_request_handler(busid, setup, data, len);
     }
 

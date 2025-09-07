@@ -613,10 +613,6 @@ int usbh_enumerate(struct usbh_hubport *hport)
     }
 
 errout:
-    if (hport->raw_config_desc) {
-        usb_osal_free(hport->raw_config_desc);
-        hport->raw_config_desc = NULL;
-    }
     return ret;
 }
 
@@ -624,7 +620,6 @@ void usbh_hubport_release(struct usbh_hubport *hport)
 {
     if (hport->connected) {
         hport->connected = false;
-        usbh_free_devaddr(hport);
         for (uint8_t i = 0; i < hport->config.config_desc.bNumInterfaces; i++) {
             if (hport->config.intf[i].class_driver && hport->config.intf[i].class_driver->disconnect) {
                 CLASS_DISCONNECT(hport, i);
@@ -634,6 +629,12 @@ void usbh_hubport_release(struct usbh_hubport *hport)
         usbh_kill_urb(&hport->ep0_urb);
         if (hport->mutex) {
             usb_osal_mutex_delete(hport->mutex);
+        }
+        usbh_free_devaddr(hport);
+
+        if (hport->raw_config_desc) {
+            usb_osal_free(hport->raw_config_desc);
+            hport->raw_config_desc = NULL;
         }
     }
 }
